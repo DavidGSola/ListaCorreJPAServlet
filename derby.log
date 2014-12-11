@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Wed Dec 10 20:57:32 GMT+01:00 2014:
+ Iniciando instancia a816c00e-014a-35c7-2988-00000063ed00 de Derby, versión The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): 
+en el directorio de base de datos C:\Users\DavidGSola\Downloads\db-derby-10.11.1.1-bin\db-derby-10.11.1.1-bin\baseDatos\bdListaCorreo con el cargador de clases sun.misc.Launcher$AppClassLoader@1d16e93
+Cargado desde file:/C:/Users/DavidGSola/Downloads/db-derby-10.11.1.1-bin/db-derby-10.11.1.1-bin/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_25-b18
+user.dir=C:\Users\DavidGSola\Documents\Facultad\Eclipse\workspace\DSBCS_Practica2
+os.name=Windows 8.1
+os.arch=x86
+os.version=6.3
+derby.system.home=null
+Cargador de clases de base de datos iniciado - derby.database.classpath=''
