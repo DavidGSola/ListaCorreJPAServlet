@@ -9,6 +9,13 @@ import javax.persistence.Query;
 
 import com.app.model.Usuario;
 
+/**
+ * Clase que representa una base de datos que hace uso de JPA.
+ * Permite insertar, eliminar, seleccionar y comprobar la existencia
+ * de un email en la base de datos.
+ * @author DavidGSola
+ *
+ */
 public class DBUsuario 
 {
 	private static final String PERSISTENCE_UNIT_NAME = "listaCorreo";
@@ -35,8 +42,8 @@ public class DBUsuario
 	}
 	
 	/**
-	 * Eliminamos un usuario de la base de datos.
-	 * @param usuario Usuario a eliminar
+	 * Elimina un usuario de la base de datos utilizando su id
+	 * @param id Id del usuario a eliminar
 	 */
 	public static void eliminar(long id)
 	{
@@ -62,7 +69,7 @@ public class DBUsuario
 	 * Actualiza el email de un usuario
 	 * @param usuario Usuario a actualizar
 	 * @param newEmail Nuevo email del usuario
-	 * @return si ha sido existosa la operación
+	 * @return Si ha sido existosa la operación
 	 */
 	public static boolean actualizar(Usuario usuario, String newEmail)
 	{
@@ -134,6 +141,10 @@ public class DBUsuario
 		return res;
 	}
 	
+	/**
+	 * Devuelve una lista con todos los usuarios de la base de datos
+	 * @return Lista de los usuarios
+	 */
 	public static List<Usuario> seleccionarTodosUsuarios()
 	{
 		factoria = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);

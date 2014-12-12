@@ -15,7 +15,10 @@ import com.app.database.DBUsuario;
 import com.app.model.Usuario;
 
 /**
- * Servlet implementation class ListaCorreo
+ * Servlet que maneja una lista de correo haciendo 
+ * uso de una base de datos persistente (JPA)
+ * @author DavidGSola
+ *
  */
 @WebServlet("/ListaCorreoServlet")
 public class ListaCorreoServlet extends HttpServlet {
@@ -34,8 +37,6 @@ public class ListaCorreoServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		// TODO Auto-generated method stub
-	 
 		PrintWriter out = response.getWriter();
 
         out.println("<html>");
@@ -57,16 +58,20 @@ public class ListaCorreoServlet extends HttpServlet {
 	{
 		String accion = request.getParameter("accion");
 		
+		// Comprobamos la acción solicitada
 		if (accion.equalsIgnoreCase("registrar"))
 		{
+			// Obtenemos los parámetros para registrar al usuario
 			String nombre = request.getParameter("nombre");
 			String apellidos = request.getParameter("apellidos");
 			String email = request.getParameter("email");
 			
-			System.out.println("email: " + 	email);
-			
+			// Comprobamos la existencia del email en la BD
 			if(!DBUsuario.existeEmail(email))
 			{
+				// Se inserta el usuario y se devuelve. Se devuelve para que 
+				// desde el cliente se pueda referenciar al usuario a través
+				// de su ID (la ID se genera al insertar el usuario en la base de datos
 				DBUsuario.insertar(new Usuario(nombre, apellidos, email));
 				Usuario usuario = DBUsuario.seleccionarUsuario(email);
 
@@ -84,6 +89,7 @@ public class ListaCorreoServlet extends HttpServlet {
 		}
 		else if(accion.equalsIgnoreCase("getUsuarios"))
 		{
+			// Obtenemos una lista de todos los usuarios y la devolvemos
 			List<Usuario> usuarios = DBUsuario.seleccionarTodosUsuarios();
 			
 			ObjectOutputStream objOut = new ObjectOutputStream(
@@ -93,6 +99,7 @@ public class ListaCorreoServlet extends HttpServlet {
 			objOut.close();
 		}else if(accion.equalsIgnoreCase("eliminar"))
 		{
+			// Obtenemos el parámetro id para eliminarlo de la base de datos
 			String id = request.getParameter("id");
 			DBUsuario.eliminar(Long.parseLong(id));
 			

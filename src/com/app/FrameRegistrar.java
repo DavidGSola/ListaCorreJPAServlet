@@ -1,7 +1,6 @@
 package com.app;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -13,32 +12,55 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-
-import sun.text.normalizer.CharTrie.FriendAgent;
 
 import com.app.model.Usuario;
 
-
+/**
+ * Frame registrar de la interfaz de usuario. Permite registrar un usuario
+ * en la lista de correo.
+ * @author DavidGSola
+ *
+ */
 public class FrameRegistrar extends JFrame implements ActionListener
 {
+	/**
+	 * Textfield donde escribir el nombre
+	 */
 	private JTextField jtfNombre;
+	
+	/**
+	 * Textfield donde escribir los apellidos
+	 */
 	private JTextField jtfApellidos;
+	
+	/**
+	 * Textfield donde escribir el email
+	 */
 	private JTextField jtfEmail;
+	
+	/**
+	 * Botón de registrar
+	 */
 	private JButton jbRegistrarse;
+	
+	/**
+	 * Botón de cancelar el registro
+	 */
 	private JButton jbCancelar;
 	
+	/**
+	 * Referencia al frame principal de la interfaz de usuario
+	 */
 	private FramePrincipal fPrincipal;
 
 	/**
-	 * Create the application.
+	 * Crea la aplicación
 	 */
 	public FrameRegistrar(FramePrincipal principal) 
 	{
@@ -47,8 +69,7 @@ public class FrameRegistrar extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Initialize the contents of the panel.
-	 * @param jtfEmail 
+	 * Inicializa el panel principal
 	 */
 	private void initialize() {
 		this.setBounds(100, 100, 580, 300);
@@ -113,8 +134,10 @@ public class FrameRegistrar extends JFrame implements ActionListener
 		String actionCommand = e.getActionCommand();
 		if(actionCommand == "registrar")
 		{
+			// Registramos el usuario utilizando el servlet
 			Usuario usuario = registrarUsuario(new Usuario(jtfNombre.getText(), jtfApellidos.getText(), jtfEmail.getText()) );
 			
+			// Si se registra con exito lo añadimos a la tabla del frame principal
 			if(usuario != null)
 				fPrincipal.addUsuarioToTable(usuario);
 		}
@@ -124,11 +147,18 @@ public class FrameRegistrar extends JFrame implements ActionListener
 		}
 	}
 	
+	/**
+	 * Registra un usuario en la lista de correo haciendo uso del servlet
+	 * @param usuario
+	 * @return
+	 */
 	private Usuario registrarUsuario(Usuario usuario)
 	{
 		try
 		{
+			// Seleccionamos la acción a realizar
 			String accion = "accion=registrar&";
+			// Añadimos los datos del usuario a registrar
 			String nombre = "nombre=" + usuario.getNombre() + "&";
 			String apellidos = "apellidos=" + usuario.getApellidos() + "&";
 			String email = "email=" + usuario.getEmail() + "&";
@@ -149,6 +179,7 @@ public class FrameRegistrar extends JFrame implements ActionListener
 			output.flush();
 			output.close();
 			
+			// Leemos la respuesta
 			String answer = servletConnection.getContentType();
 			
 			if (answer.equalsIgnoreCase("Correcto")) 
