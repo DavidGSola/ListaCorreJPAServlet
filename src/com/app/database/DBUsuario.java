@@ -71,16 +71,13 @@ public class DBUsuario
 	 * @param newEmail Nuevo email del usuario
 	 * @return Si ha sido existosa la operación
 	 */
-	public static boolean actualizar(Usuario usuario, String newEmail)
+	public static boolean actualizar(Long id, String newEmail)
 	{
 		factoria = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 		EntityManager em = factoria.createEntityManager();
 
-		Query q = em.createQuery("Select p FROM Usuario p WHERE  p.nombre = :nombre AND p.apellidos = :apellidos AND p.email = :email");
-		q.setParameter("nombre", usuario.getNombre());
-		q.setParameter("apellidos", usuario.getApellidos());
-		q.setParameter("email", usuario.getEmail());
-		
+		Query q = em.createQuery("Select p FROM Usuario p WHERE  p.id = :id");
+		q.setParameter("id", id);
 		// Comprobamos que se ha obtenido al menos un usuario
 		if(q.getResultList().size() == 1)
 		{

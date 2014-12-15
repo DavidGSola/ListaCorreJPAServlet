@@ -104,6 +104,20 @@ public class ListaCorreoServlet extends HttpServlet {
 			DBUsuario.eliminar(Long.parseLong(id));
 			
 			response.setContentType("Correcto");
+		}else if(accion.equalsIgnoreCase("actualizar"))
+		{
+			// Obtenemos el parámetro id para eliminarlo de la base de datos
+			String id = request.getParameter("id");
+			String newEmail = request.getParameter("newEmail");
+			
+			// Comprobamos la existencia del email en la BD
+			if(!DBUsuario.existeEmail(newEmail))
+			{
+				DBUsuario.actualizar(Long.parseLong(id), newEmail);
+				response.setContentType("Correcto");
+			}
+			else
+				response.setContentType("Ya existe el email");
 		}
 			
 	}

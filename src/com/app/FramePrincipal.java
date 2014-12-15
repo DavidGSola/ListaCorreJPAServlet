@@ -48,6 +48,11 @@ public class FramePrincipal extends JFrame implements ActionListener
 	private JButton jbEliminar;
 	
 	/**
+	 * Botón de actualizar un usuario
+	 */
+	private JButton jbActualizar;
+	
+	/**
 	 * Botón de salir
 	 */
 	private JButton jbSalir;
@@ -95,7 +100,7 @@ public class FramePrincipal extends JFrame implements ActionListener
 	 * Inicializa el panel principal
 	 */
 	private void initialize() {
-		this.setBounds(100, 100, 580, 300);
+		this.setBounds(100, 100, 790, 300);
 		this.setLayout(null);
 		
 		// Modelo de la tabla de los usuarios
@@ -113,7 +118,7 @@ public class FramePrincipal extends JFrame implements ActionListener
 		jtUsuarios.setBounds(20, 10, 540, 180);
 		
 		scrollPane = new JScrollPane(jtUsuarios);
-		scrollPane.setBounds(20, 10, 540, 180);
+		scrollPane.setBounds(20, 10, 540, 240);
 		this.add(scrollPane);
 	
 		// Rellenamos la tabla con los usuarios de la base de datos
@@ -122,22 +127,29 @@ public class FramePrincipal extends JFrame implements ActionListener
 		jbRegistrarse = new JButton("Registrar");
 		jbRegistrarse.addActionListener(this);
 		jbRegistrarse.setActionCommand("registrar");
-		jbRegistrarse.setFont(new Font("Calibri", Font.PLAIN, (24)));
-		jbRegistrarse.setBounds(380, 200, 160, 45);
+		jbRegistrarse.setFont(new Font("Calibri", Font.PLAIN, (16)));
+		jbRegistrarse.setBounds(580, 10, 180, 30);
 		this.add(jbRegistrarse);	
+	
+		jbActualizar = new JButton("Actualizar");
+		jbActualizar.addActionListener(this);
+		jbActualizar.setActionCommand("actualizar");
+		jbActualizar.setFont(new Font("Calibri", Font.PLAIN, (16)));
+		jbActualizar.setBounds(580, 50, 180, 30);
+		this.add(jbActualizar);
 		
 		jbEliminar = new JButton("Eliminar");
 		jbEliminar.addActionListener(this);
 		jbEliminar.setActionCommand("eliminar");
-		jbEliminar.setFont(new Font("Calibri", Font.PLAIN, (24)));
-		jbEliminar.setBounds(200, 200, 160, 45);
-		this.add(jbEliminar);
+		jbEliminar.setFont(new Font("Calibri", Font.PLAIN, (16)));
+		jbEliminar.setBounds(580, 90, 180, 30);
+		this.add(jbEliminar);		
 		
 		jbSalir = new JButton("Salir");
 		jbSalir.addActionListener(this);
 		jbSalir.setActionCommand("salir");
-		jbSalir.setFont(new Font("Calibri", Font.PLAIN, (24)));
-		jbSalir.setBounds(20, 200, 160, 45);
+		jbSalir.setFont(new Font("Calibri", Font.PLAIN, (16)));
+		jbSalir.setBounds(580, 215, 180, 30);
 		this.add(jbSalir);
 	}
 	
@@ -150,28 +162,47 @@ public class FramePrincipal extends JFrame implements ActionListener
 			// Mostramos el frame para registrar usuarios
 			fRegistrar = new FrameRegistrar(this);
 			fRegistrar.setVisible(true);
+			
 		}else if(actionCommand.equals("eliminar"))
 		{
 			// Obtenemos el indice de la fila seleccionada en la tabla
 			int index = jtUsuarios.getSelectedRow();
 			
-			// Eliminamos el usuario llamado al servlet
-			boolean eliminado = eliminarUsuario(listaUsuarios.get(index));
-			
-			if(eliminado)
+			// Comprobamos que se hay seleccionado un usuario
+			if(index == -1)
+				JOptionPane.showMessageDialog(this, "Debe seleccionar un usuario de la lista.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+			else
 			{
-				DefaultTableModel model = (DefaultTableModel) jtUsuarios.getModel();
+				// Eliminamos el usuario llamado al servlet
+				boolean eliminado = eliminarUsuario(listaUsuarios.get(index));
 				
-				// Eliminamos el usuario del modelo de la tabla y de la lista interta
-				model.removeRow(index);
-				listaUsuarios.remove(index);
+				if(eliminado)
+				{
+					DefaultTableModel model = (DefaultTableModel) jtUsuarios.getModel();
+					
+					// Eliminamos el usuario del modelo de la tabla y de la lista interta
+					model.removeRow(index);
+					listaUsuarios.remove(index);
+				}
 			}
+		}else if(actionCommand.equals("actualizar"))
+		{
+			// Obtenemos el indice de la fila seleccionada en la tabla
+			int index = jtUsuarios.getSelectedRow();
+			
+			if(index == -1)
+				JOptionPane.showMessageDialog(this, "Debe seleccionar un usuario de la lista.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+			else
+			{
+				FrameActualizar fActualizar = new FrameActualizar(this,  listaUsuarios.get(index));
+				fActualizar.setVisible(true);
+			}
+			
 		}else if(actionCommand.equals("salir"))
 		{
 			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		}
 	}
-	
 	
 	/**
 	 * Obtiene y rellena la tabla con la lista de los usuarios haciendo una llamada al servlet
@@ -210,9 +241,7 @@ public class FramePrincipal extends JFrame implements ActionListener
 				// Añadimos a la tabla cada usuario para que se muestre
 				DefaultTableModel model = (DefaultTableModel) jtUsuarios.getModel();
 				for(Usuario usuario : usuarios)
-				{
 					model.addRow(new Object[]{usuario.getNombre(), usuario.getApellidos(),usuario.getEmail()});
-				}
 				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -258,8 +287,7 @@ public class FramePrincipal extends JFrame implements ActionListener
 			
 			if(answer.equalsIgnoreCase("Correcto")) 
 			{
-				JOptionPane.showMessageDialog(this, 
-						"Usuario " + usuario.getNombre() + " eliminado correctamente.");
+				JOptionPane.showMessageDialog(this, "Usuario " + usuario.getNombre() + " eliminado correctamente.");
 				
 				return true;
 			}
@@ -283,6 +311,20 @@ public class FramePrincipal extends JFrame implements ActionListener
 		
 		// Añadimos el usuario al modelo de la tabla para que se muestre
 		DefaultTableModel model = (DefaultTableModel) jtUsuarios.getModel();
-		model.addRow(new Object[]{usuario.getNombre(), usuario.getApellidos(),usuario.getEmail()});
+		model.addRow(new Object[]{usuario.getNombre(), usuario.getApellidos(), usuario.getEmail()});
+	}
+		
+	/**
+	 * Actualiza el email de un usuario en la tabla
+	 * @param usuario
+	 * @param email
+	 */
+	public void actualizarUsuarioEmailTable(Usuario usuario, String email)
+	{
+		int index = listaUsuarios.indexOf(usuario);
+		
+		// Actualizamos el usuario del modelo de la tabla
+		DefaultTableModel model = (DefaultTableModel) jtUsuarios.getModel();
+		model.setValueAt(email, index, 2);
 	}
 }
