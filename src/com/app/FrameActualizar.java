@@ -20,10 +20,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import com.app.model.Usuario;
+import com.app.util.ValidadorEmail;
 
 /**
- * Frame registrar de la interfaz de usuario. Permite registrar un usuario
- * en la lista de correo.
+ * Frame actualizar de la interfaz de usuario. Permite actualizar el 
+ * email de un usuario en la lista de correo.
  * @author DavidGSola
  *
  */
@@ -35,7 +36,7 @@ public class FrameActualizar extends JFrame implements ActionListener
 	private JTextField jtfEmail;
 	
 	/**
-	 * Botón de registrar
+	 * Botón de Actualizar
 	 */
 	private JButton jbActualizar;
 	
@@ -68,7 +69,7 @@ public class FrameActualizar extends JFrame implements ActionListener
 	 * Inicializa el panel principal
 	 */
 	private void initialize() {
-		this.setBounds(100, 100, 580, 300);
+		this.setBounds(100, 100, 580, 200);
 		this.setLayout(null);
 		
 		JLabel jlNombre = new JLabel("Nuevo email:");
@@ -78,7 +79,7 @@ public class FrameActualizar extends JFrame implements ActionListener
 		
 		jtfEmail = new JTextField();
 		jtfEmail.setForeground(Color.GRAY);
-		jtfEmail.setBounds(140, 30, 400, 45);
+		jtfEmail.setBounds(160, 30, 400, 45);
 		jtfEmail.setMargin(new Insets((5),(10),(5),(5)));
 		jtfEmail.setFont(new Font("Calibri", Font.PLAIN, (24)));
 		jtfEmail.setColumns(10);
@@ -88,14 +89,14 @@ public class FrameActualizar extends JFrame implements ActionListener
 		jbActualizar.addActionListener(this);
 		jbActualizar.setActionCommand("actualizar");
 		jbActualizar.setFont(new Font("Calibri", Font.PLAIN, (24)));
-		jbActualizar.setBounds(380, 200, 160, 45);
+		jbActualizar.setBounds(380, 100, 160, 45);
 		this.add(jbActualizar);	
 		
 		jbCancelar = new JButton("Cancelar");
 		jbCancelar.addActionListener(this);
 		jbCancelar.setActionCommand("cancelar");
 		jbCancelar.setFont(new Font("Calibri", Font.PLAIN, (24)));
-		jbCancelar.setBounds(200, 200, 160, 45);
+		jbCancelar.setBounds(200, 100, 160, 45);
 		this.add(jbCancelar);
 	}
 	
@@ -104,19 +105,19 @@ public class FrameActualizar extends JFrame implements ActionListener
 		String actionCommand = e.getActionCommand();
 		if(actionCommand == "actualizar")
 		{
-			// Actualizamos el usuario utilizando el servlet
 			if(jtfEmail.getText().length()!=0)
 			{
-				actualizarUsuario(usuarioActualizar, jtfEmail.getText() );
+				if(!ValidadorEmail.validar(jtfEmail.getText()))
+					JOptionPane.showMessageDialog(this, "Debe utilizar un email valido (example@example.com).", "Advertencia", JOptionPane.WARNING_MESSAGE);
+				else
+				{
+					actualizarUsuario(usuarioActualizar, jtfEmail.getText() );
 
-				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+					this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+				}
 			}
 			else
-				JOptionPane.showMessageDialog(this,
-					    "Debe rellenar todos los campos.",
-					    "Advertencia",
-					    JOptionPane.WARNING_MESSAGE);
-
+				JOptionPane.showMessageDialog(this, "Debe rellenar todos los campos.", "Advertencia", JOptionPane.WARNING_MESSAGE);
 		}
 		else if(actionCommand == "cancelar")
 		{
@@ -127,9 +128,9 @@ public class FrameActualizar extends JFrame implements ActionListener
 	/**
 	 * Actualiza un usuario en la lista de correo haciendo uso del servlet con un nuevo correo
 	 * @param usuario
-	 * @return
+	 * @return si se ha llevado a cabo con exito la operación
 	 */
-	private void actualizarUsuario(Usuario usuario, String newEmail)
+	private boolean actualizarUsuario(Usuario usuario, String newEmail)
 	{
 		try
 		{
@@ -159,9 +160,10 @@ public class FrameActualizar extends JFrame implements ActionListener
 			
 			if (answer.equalsIgnoreCase("Correcto")) 
 			{
-				JOptionPane.showMessageDialog(this, 
-						"Actualizado el email del usuario " + usuario.getNombre() + " correctamente.");
+				JOptionPane.showMessageDialog(this, "Actualizado el email del usuario " + usuario.getNombre() + " correctamente.");
 				fPrincipal.actualizarUsuarioEmailTable(usuario, newEmail);
+				
+				return true;
 
 			} else if (answer.equalsIgnoreCase("Ya existe el email")) 
 			{
@@ -178,5 +180,7 @@ public class FrameActualizar extends JFrame implements ActionListener
 		{
 			e.printStackTrace();
 		}
+		
+		return false;
 	}
 }

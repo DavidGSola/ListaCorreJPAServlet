@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import com.app.model.Usuario;
+import com.app.util.ValidadorEmail;
 
 /**
  * Frame registrar de la interfaz de usuario. Permite registrar un usuario
@@ -136,15 +137,12 @@ public class FrameRegistrar extends JFrame implements ActionListener
 		{
 			Usuario usuario = null;
 			if(jtfNombre.getText().length()!=0 && jtfApellidos.getText().length()!=0 && jtfEmail.getText().length()!=0)
-			{
-				// Registramos el usuario utilizando el servlet
-				usuario = registrarUsuario(new Usuario(jtfNombre.getText(), jtfApellidos.getText(), jtfEmail.getText()) );
-			}
+				if(!ValidadorEmail.validar(jtfEmail.getText()))
+					JOptionPane.showMessageDialog(this, "Debe utilizar un email valido (example@example.com).", "Advertencia", JOptionPane.WARNING_MESSAGE);
+				else
+					usuario = registrarUsuario(new Usuario(jtfNombre.getText(), jtfApellidos.getText(), jtfEmail.getText()) );
 			else
-				JOptionPane.showMessageDialog(this,
-					    "Debe rellenar todos los campos.",
-					    "Advertencia",
-					    JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Debe rellenar todos los campos.", "Advertencia", JOptionPane.WARNING_MESSAGE);
 			
 			// Si se registra con exito lo añadimos a la tabla del frame principal
 			if(usuario != null)

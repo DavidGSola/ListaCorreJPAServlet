@@ -11,7 +11,7 @@
       <property name="javax.persistence.jdbc.user" value="test" />
       <property name="javax.persistence.jdbc.password" value="test" />
  
-      <!-- EclipseLink debe crear este esquema de base de datos automaticamente -->
+      <property name="eclipselink.connection-pool.default.initial" value="1" />
       <property name="eclipselink.ddl-generation" value="create-tables" />
       <property name="eclipselink.ddl-generation.output-mode"
         value="database" />
